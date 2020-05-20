@@ -28,20 +28,26 @@ namespace WebAudioConverter.Helpers
             }
         }
 
+        public static string GetConvertedDataTypeForSending(string path)
+        {
+            var type = GetConvertedDataType(path);
+
+            switch (type)
+            {
+                case "mp3":
+                    return "audio/x-mpeg3";
+                    break;
+                case "wma":
+                    return "audio/x-ms-wma";
+                    break;
+                default:
+                    return null;
+            }
+        }
+
         public static string GetConvertedDataType(string path)
         {
-            var type = path.Split('.', StringSplitOptions.RemoveEmptyEntries).LastOrDefault();
-
-            if (type == "mp3")
-            {
-                return "audio/x-mpeg3";
-            }
-            else if (type == "wma")
-            {
-                return "audio/x-ms-wma";
-            }
-
-            return null;
+            return path.Split('.', StringSplitOptions.RemoveEmptyEntries).LastOrDefault();
         }
     }
 }

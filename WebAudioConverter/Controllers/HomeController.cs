@@ -75,10 +75,12 @@ namespace WebAudioConverter.Controllers
                 await stream.CopyToAsync(memory);
             }
 
+            memory.Position = 0;
             Response.Headers.Add("content-disposition", "attachment;" + convertedDataPath + ";");
-            var type = FilesHelpers.GetConvertedDataType(convertedDataPath);
+            var typeForSend = FilesHelpers.GetConvertedDataTypeForSending(convertedDataPath);
+            var dataType = FilesHelpers.GetConvertedDataType(convertedDataPath);
 
-            return File(memory, type);
+            return File(memory, typeForSend, "audio." + dataType);
         }
 
         [HttpGet]
