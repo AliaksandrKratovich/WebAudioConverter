@@ -10,6 +10,7 @@ namespace WebAudioConverter.Controllers
     public class HomeController : Controller
     {
         private static bool _spectrogramsAreReady;
+        private static bool _fileConverted;
 
         private readonly IAudioService _audioService;
 
@@ -34,6 +35,7 @@ namespace WebAudioConverter.Controllers
             }
 
             _spectrogramsAreReady = false;
+            _fileConverted = false;
 
             FilesHelpers.ClearAllData();
 
