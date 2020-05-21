@@ -28,22 +28,22 @@
                 <input type="number" class="form-control" placeholder="22000" name="maxFrequency">
             </div>
         </div>
-        <input class="btn btn-dark justify-content-xl-center" type="submit" value="Upload audio" onclick="ConvertingFiles()" />
+        <input class="btn btn-dark justify-content-xl-center" type="submit" value="Upload audio" onclick="CheckConverting();" />
     </form>
-    
+
     <div class="mt-5 container">
         <div id="info">
 
         </div>
         <div id="loadFiles">
             <div id="forms">
-                <form class="col-5 mt-2 align-self-center" method="get" asp-action="ExportAudio">
+                <form class="col-5 mt-2 align-self-center" method="get" asp-action="ExportAudio" onclick="CheckConverting()">
                     <button type="submit" class="btn btn-info btn-block">Download converted file</button>
                 </form>
-                <form class="col-5 mt-2" method="get" asp-action="ExportMp3Spectogram">
+                <form class="col-5 mt-2" method="get" asp-action="ExportMp3Spectogram" onclick="CheckConverting()">
                     <button type="submit" class="btn btn-info btn-block">Open Mp3 Spectogram</button>
                 </form>
-                <form class="col-5 mt-2" method="get" asp-action="ExportWMASpectogram">
+                <form class="col-5 mt-2" method="get" asp-action="ExportWMASpectogram" onclick="CheckConverting()">
                     <button type="submit" class="btn btn-info btn-block">Open WMA Spectogram</button>
                 </form>
             </div>
@@ -54,6 +54,24 @@
     <script>
         function ConvertingFiles() {
             $("#info").text("Converting files...Please wait");
+        }
+
+        function CheckConverting() {
+            $.ajax({
+                type: "GET",
+                url: "/Home/ConvertingDone",
+                dataType: "json",
+                success: function (responce) {
+                    if (jQuery.parseJSON(responce) === true) {
+                        $("#info").text("Converting files...Please wait");
+                    } else {
+                        $("#info").text("");
+                    }
+                },
+                complete: function (data) {
+                    return false;
+                }
+            });
         }
     </script>
 </body>

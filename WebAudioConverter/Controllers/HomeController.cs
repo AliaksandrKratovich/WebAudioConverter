@@ -10,7 +10,7 @@ namespace WebAudioConverter.Controllers
     public class HomeController : Controller
     {
         private static bool _spectrogramsAreReady;
-        private static bool _fileConverted;
+        private static bool _fileIsConverting;
 
         private readonly IAudioService _audioService;
 
@@ -27,15 +27,14 @@ namespace WebAudioConverter.Controllers
         [HttpPost]
         public async Task<IActionResult> UploadAudio(IFormFile uploadedAudio, int minFrequency = 1, int maxFrequency = 22000)
         {
-
             ValidateFrequency(ref minFrequency, ref maxFrequency);
-            if (uploadedAudio == null)
+            if (uploadedAudio == null || _fileIsConverting)
             {
                 return RedirectToAction("Index");
             }
 
+            _fileIsConverting = true;
             _spectrogramsAreReady = false;
-            _fileConverted = false;
 
             FilesHelpers.ClearAllData();
 
@@ -57,6 +56,7 @@ namespace WebAudioConverter.Controllers
 
                 _spectrogramsAreReady = await _audioService.GenerateSpectograms(minFrequency, maxFrequency);
             }
+            _fileIsConverting = false;
 
             return RedirectToAction("Index");
         }
@@ -67,7 +67,7 @@ namespace WebAudioConverter.Controllers
             var memory = new MemoryStream();
             var convertedDataPath = PathHelpers.LastConvertedDataPath;
 
-            if (convertedDataPath == null)
+            if (convertedDataPath == null || _fileIsConverting)
             {
                 return RedirectToAction("Index");
             }
@@ -128,5 +128,17 @@ namespace WebAudioConverter.Controllers
                 maxFrequency = temp;
             }
         }
+
+        [HttpGet]
+        public JsonResult ConvertingDone()
+        {
+            if (!_fileIsConverting)
+            {
+                return Json(false);
+            }
+
+            return Json(true);
+        }
+
     }
 }
